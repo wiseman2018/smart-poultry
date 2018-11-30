@@ -1,0 +1,56 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<div class="jumbotron text-center" style="background:cyan">
+    <p class="lead"> About This Project</p>
+</div>
+    <br>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card-group">
+        <div class="card">
+          <img class="card-img-top" src="https://www.w3schools.com/bootstrap4/img_avatar3.png" alt="Danish Ali">
+          <div class="card-body">
+            <h5 class="card-title">Paul Akinola</h5>
+            <p class="card-text">@paul</p>
+            <p class="card-text"><small class="text-muted">x17158613@student.ncirl.ie</small></p>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="btn btn-primary btn-block">Profile</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  
+  <div class="col-md-6">
+      <p class="lead">Objectives</p>
+        This research work is going to focus on the following area
+        Get headcount of chicks by single capture from the camera module
+        Auto-regularise the room temperature for the chicks, by sensing the temperature change, and regulate it using the heater system
+        Determine the mortality rate of chicks day in day out.
+        Detect movement of chicks and send an alert message if no movement is observed consecutively for a specified time period.
+        
+        <p class="lead">Requirements</p>
+        Software Requirement
+        Raspbian OS: Linux operating system that runs on Raspberry PI.
+        Python 2.7: For establishing communication with sensors.
+        OpenCV lib: For image processing
+        
+        <p class="lead">Technical Details</p>
+        Backend Development:
+        Python for communicating with the sensors
+        API development: This API section of the project would be developed with Java using Jersey.
+        Frontend: HTML, CSS, Javascript, Angular JS
+        Report/Analytics:  HighCharts for interactive visualization
+
+
+  </div>
+  
+</div>
+
+
+
+{% endblock %}

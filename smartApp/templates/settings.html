@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    <style>
+    .form-horizontal{
+        padding-bottom: 2rem;
+    }
+    legend {
+
+        padding-top:2rem;
+    }
+
+    </style>
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <fieldset>
+        <legend>Settings</legend>
+        <form class="form-horizontal" method="post" action='/processSettings'>
+            
+          <div class="form-group">
+            <label for="temperature">Min Temperature</label>
+            <input type="number" class="form-control" id="min_temperature" name="min_temperature" aria-describedby="tmpHelp" placeholder="Max Temperature" value="{{min_temp}}">
+            <small id="tmpHelp" class="form-text text-muted">Set the min temperature at which the heating would be switched on.</small>
+          </div>
+          
+          
+          <div class="form-group">
+            <label for="temperature">Max Temperature</label>
+            <input type="number" class="form-control" id="max_temperature" name="max_temperature" aria-describedby="tmpHelp" placeholder="Max Temperature" value="{{max_temp}}">
+            <small id="tmpHelp" class="form-text text-muted">Set the max temperature at which the fan would be switched on.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="humidity">Phone Number</label>
+            <input type="number" class="form-control" id="emergency_phone" name="emergency_phone" aria-describedby="hmdHelp" placeholder="Emergency Phone" value="{{phone}}">
+            <small id="hmdHelp" class="form-text text-muted">Number to reach in an emergency situation.</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="emergency_email">Email Address</label>
+            <input type="email" class="form-control" id="emergency_email" name="emergency_email" aria-describedby="hmdHelp" placeholder="Emergency Email" value="{{email}}">
+            <small id="hmdHelp" class="form-text text-muted">Email to reach in an emergency situation.</small>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Submit</button>
+
+        </form>
+      </fieldset>
+    </div>
+
+    <div class="col-sm">
+      <fieldset>
+        <legend>Current Settings</legend>
+        <h5>Minimum Temperature: {{min_temp}}</h5>
+        <h5>Maximum Temperature: {{max_temp}}</h5>
+        <h5>Email: {{email}}</h5>
+        <h5 style="color:red;">Emergency Contact: {{phone}}</h5>
+
+      </fieldset>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
