@@ -237,4 +237,5 @@ def lab_temp():
         return render_template("No_sensor.html")
 
 if __name__ == '__main__':
-    app.run(debug=True)
+#    app.run(debug=False)
+    app.run(host='192.168.0.21')
