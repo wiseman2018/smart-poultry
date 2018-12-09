@@ -15,7 +15,7 @@ DATABASE = "sqlite-autoconf-3230100/project"
 SMS_EMAIL = "otcleantech@gmail.com"
 PASSWORD = "P@$$w0rd123"
 SENDER = "AUTO-HOME"
-EMERGENCY_MSG = "There is an emergency in the house"
+EMERGENCY_MSG = "Emergency, Temperature is at a critical level"
 
 def create_connection(db_file):
     try:
@@ -72,14 +72,16 @@ def save_settings(conn, min_temp, max_temp, emergency_phone, emergency_email):
 def send_emergency_message(conn):
     cur = conn.cursor()
     # fetch emergency phone number
-    cur.execute('SELECT emergency_phone FROM settings order by ROWID desc limit 1')
+    cur.execute('SELECT email FROM setting order by ROWID desc limit 1')
     rows = cur.fetchall()
 
     for row in rows:
         phone_number = row[0]
     #
     # # call sms api
-    url= "https://www.smsgator.com/bulksms?email=" + SMS_EMAIL + "&password=" + PASSWORD + "&type=1&dlr=1&destination=" + "+" + str(phone_number) + "&sender=" + SENDER + "&message=" + EMERGENCY_MSG
+    #
+    url = "https://api.africastalking.com/restless/send?message=" + EMERGENCY_MSG + "&username=tbasetest2018&Apikey=ceeabb27657cd6cfb3952dfae8b7943b4975dbee6a5b55fd4819f333bb1100ee&to=" + "+" + str(phone_number)
+    #url= "https://www.smsgator.com/bulksms?email=" + SMS_EMAIL + "&password=" + PASSWORD + "&type=1&dlr=1&destination=" + "+" + str(phone_number) + "&sender=" + SENDER + "&message=" + EMERGENCY_MSG
     print(url)
     resp = urlopen(url)
     return resp.read()
@@ -177,6 +179,18 @@ def post_reading():
         print("posting data from sensor")
         #select_all_temp(conn)
         save_sensor_data(conn, temperature, humidity)
+        
+        # check if temperate is within acceptable settings
+        settings = get_recent_setting(conn)
+
+        if settings:
+            min_temp = int(settings[0][0])
+            max_temp = int(settings[0][1])
+            
+            if float(temperature) > max_temp:
+                send_emergency_message(conn)
+            if float(temperature) < min_temp:
+                send_emergency_message(conn)
 
     return "Ok"
 
@@ -237,5 +251,5 @@ def lab_temp():
         return render_template("No_sensor.html")
 
 if __name__ == '__main__':
-#    app.run(debug=False)
-    app.run(host='192.168.0.21')
+    app.run(debug=False)
+#    app.run('0.0.0.0')
