@@ -1,3 +1,6 @@
+<!-- Moment Scripts -->
+<script src="https://momentjs.com/downloads/moment.js"></script>
+<script src="https://momentjs.com/downloads/moment-with-locales.js"></script>
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -49,12 +52,20 @@
       <i class="fa fa-search"></i>Filter
     </button>
   </div>
+  
+  <div class="row">
+      <div col-md-6>
+          <div id="container" style="width: 100%; height: 400px; margin: 0 auto"></div>
+      </div>
+      <div col-md-6>
+          <div id="humid_container" style="width: 100%; height: 400px; margin: 0 auto"></div>
+      </div>
+  </div>
 
-<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
 
 
 <script>
-// $('.datepick').datepicker();
 
 function plot(start_date_, end_date_) {
   let url = "/api/get_temp?start_date=" + start_date_ + "&end_date=" + end_date_;
@@ -63,11 +74,21 @@ function plot(start_date_, end_date_) {
   $.get(url, function(data){
     Highcharts.chart('container', {
       chart: {
-          type: 'line'
+          type: 'areaspline'
       },
       title: {
-          text: 'Temperature/Humidity Reading'
+          text: 'Temperature Reading'
       },
+      legend: {
+            layout: 'vertical',
+            align: 'left',
+            verticalAlign: 'top',
+            x: 150,
+            y: 100,
+            floating: true,
+            borderWidth: 1,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+        },
       subtitle: {
           text: 'Source: Sensor Data'
       },
@@ -75,7 +96,7 @@ function plot(start_date_, end_date_) {
           categories: data.categories,
           tickmarkPlacement: 'on',
           title: {
-              enabled: false
+              enabled: true
           }
       },
       yAxis: {
@@ -101,7 +122,51 @@ function plot(start_date_, end_date_) {
       series: [{
           name: 'Temperature',
           data: data.temperature
-      }, {
+      }]
+  });
+  });
+  
+  
+  // humidity
+  $.get(url, function(data){
+    Highcharts.chart('humid_container', {
+      chart: {
+          type: 'line'
+      },
+      title: {
+          text: 'Humidity Reading'
+      },
+      subtitle: {
+          text: 'Source: Sensor Data'
+      },
+      xAxis: {
+          categories: data.categories,
+          tickmarkPlacement: 'off',
+          title: {
+              enabled: false
+          }
+      },
+      yAxis: {
+          title: {
+              text: 'Percent'
+          }
+      },
+      tooltip: {
+          pointFormat: '<span style="color:{series.color}">{series.name}</span>:({point.y:,0:0.1f})<br/>',
+          split: true
+      },
+      plotOptions: {
+          area: {
+              stacking: 'percent',
+              lineColor: '#ffffff',
+              lineWidth: 1,
+              marker: {
+                  lineWidth: 1,
+                  lineColor: '#ffffff'
+              }
+          }
+      },
+      series: [{
           name: 'Humidity',
           data: data.humidity
       }]
@@ -119,7 +184,7 @@ $("#btn_filter").click(function(){
 });
 
 // call the plot function passing start date and end date = 0, 0
-plot('2018-04-20', '2018-04-23');
+plot(moment().subtract(3, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'));
 
 
 

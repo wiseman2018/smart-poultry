@@ -11,12 +11,13 @@ import datetime
 x = randint(1, 100)
 
 #constant for database
-DATABASE = "sqlite-autoconf-3230100/project"
+DATABASE = "sqlite-autoconf-3230100/project"  # Location of database
 SMS_EMAIL = "otcleantech@gmail.com"
 PASSWORD = "P@$$w0rd123"
 SENDER = "AUTO-HOME"
 EMERGENCY_MSG = "Emergency, Temperature is at a critical level"
 
+# Creates a connection to sqlite database
 def create_connection(db_file):
     try:
         conn = sqlite3.connect(db_file)
@@ -26,16 +27,18 @@ def create_connection(db_file):
 
     return None
 
+# Query the DB for the most recent transca
 def select_all_temp(conn, startDate, endDate):
     cur = conn.cursor()
     print("connected")
-    sql = 'SELECT * FROM temps'
-    if startDate != "0" :
+    sql = 'SELECT tdate, substr(ttime, 0, 3) as hour, avg(temperature), avg(humidity) FROM temps'
+    if startDate != "" :
         sql = sql + " where tdate >= ?"
-    if endDate != "0" :
+    if endDate != "" :
         sql = sql + " and tdate <= ?"
+    sql = sql + " group by tdate, hour order by ROWID desc LIMIT 50"
     print(sql)
-
+    # , [startDate, endDate]
     cur.execute(sql, [startDate, endDate])
     print("executed")
     return cur.fetchall()
@@ -206,7 +209,7 @@ def temperature():
     conn = create_connection(DATABASE)
     with conn:
         print("2. Query all temps")
-        #select_all_temp(conn)
+        #select_all_temp order in descending(conn)
         rows = select_all_temp(conn, startDate, endDate)
 
     # build data
@@ -216,7 +219,7 @@ def temperature():
     for row in rows:
         temp.append(row[2])
         humid.append(row[3])
-        dates.append(row[0])
+        dates.append(row[0] + " " + row[1] + "hr")
 
     return jsonify({'temperature': temp, 'humidity' : humid, 'categories' : dates})
     #return jsonify(rows)
