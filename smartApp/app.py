@@ -12,8 +12,8 @@ x = randint(1, 100)
 
 #constant for database
 DATABASE = "sqlite-autoconf-3230100/project"  # Location of database
-SMS_EMAIL = "otcleantech@gmail.com"
-PASSWORD = "P@$$w0rd123"
+SMS_EMAIL = ""
+PASSWORD = ""
 SENDER = "AUTO-HOME"
 EMERGENCY_MSG = "Emergency, Temperature is at a critical level"
 
@@ -55,6 +55,11 @@ def get_recent_setting(conn):
     cur = conn.cursor()
     cur.execute('SELECT * FROM setting')
     return cur.fetchall()
+    
+def get_head_counts(conn):
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM headcount')
+    return cur.fetchall()
 
 def get_recent_temperature(conn):
     cur = conn.cursor()
@@ -70,6 +75,16 @@ def save_settings(conn, min_temp, max_temp, emergency_phone, emergency_email):
     cur.execute('INSERT INTO setting values (?,?,?, ?)', [min_temp, max_temp, emergency_phone, emergency_email])
 
     return conn.commit()
+    
+#save head count gotten from OpenCV to database
+def save_head_count(conn, head_count):
+    cur = conn.cursor()
+    
+    # save into headcount table
+    cur.execute("INSERT INTO headcount VALUES (date('now'), time('now') ,?)", [head_count])
+    
+    return conn.commit()
+    
 
 #Method to send SMS incase of emergency_phone
 def send_emergency_message(conn):
@@ -148,6 +163,20 @@ def settings():
 
     return render_template("settings.html", min_temp=min_temp, max_temp=max_temp, email=email, phone=phone)
 
+@app.route('/report')
+def report():
+    # get all records from the headcount table
+    conn = create_connection(DATABASE)
+    
+    h_counts = []
+    with conn:
+        rows = get_head_counts(conn)
+        h_counts = rows
+    
+    
+    # renders the report page
+    return render_template("report.html", h_count=h_counts)
+
 @app.route('/processSettings', methods = ['POST', 'GET'])
 def saveSettings():
 
@@ -167,6 +196,22 @@ def saveSettings():
 
     #return render_template("settings.html", )
     return redirect(url_for('settings'))
+    
+
+@app.route('/api/post_count', methods=["GET"])
+def post_count():
+    #get the params posted
+    head_count = request.args.get('count')
+    
+    print("Head count gotten is, " + head_count)
+    
+    #create connection to DB
+    conn = create_connection(DATABASE)
+    with conn:
+        #writing headcount to DB
+        save_head_count(conn, head_count)
+        
+    return "OK"
 
 @app.route('/api/post_reading', methods=["GET"])
 def post_reading():

@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<div class="jumbotron text-center" style="background:cyan">
+    <p class="lead"> Livestock Head Counts </p>
+</div>
+    <br>
+
+  
+  
+  <div class="row">
+      <div class="col">
+          <table class="table table-bordered table-stripped">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Time</th>
+					<th>Head Count</th>
+					<th>...</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for count in h_count %}	
+				<tr>
+					<td>{{count[0]}}</td>
+					<td>{{count[1]}}</td>
+					<td>{{count[2]}}</td>
+					<td>...</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+          </table>
+      </div>
+  </div>
+
+{% endblock %}
