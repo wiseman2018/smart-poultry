@@ -1,6 +1,7 @@
 # smart-poultry
-To start the app:
-cd /home/pi/Desktop/codes/smartApp && python app.py
+
+### To start the app:
+**cd /home/pi/Desktop/codes/smartApp && python app.py**.  
 
 To start the Temperature sensor listener
 cd /home/pi/Desktop/codes && python AdafruitDHT_11.py
